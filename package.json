@@ -8,9 +8,9 @@
     "test:watch": "npm run test -- --watch",
     "build": "browserify -s immutagen src/immutagen.js -o immutagen.js -t [ babelify ]",
     "release": "xyz",
-    "release:patch": "npm run release --increment patch",
-    "release:minor": "npm run release --increment minor",
-    "release:major": "npm run release --increment major"
+    "release:patch": "xyz --increment patch",
+    "release:minor": "xyz --increment minor",
+    "release:major": "xyz --increment major"
   },
   "author": "Thomas Crockett",
   "license": "MIT",
