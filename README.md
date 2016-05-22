@@ -1,4 +1,4 @@
-# immutagen
+# immutagen [![Build Status](https://travis-ci.org/pelotom/immutagen.svg?branch=master)](https://travis-ci.org/pelotom/immutagen)
 
 A JavaScript microlibrary for *emulated immutable generators*.
 
