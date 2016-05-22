@@ -1,6 +1,6 @@
 {
   "name": "immutagen",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A library for emulating immutable generators in JavaScript",
   "main": "immutagen.js",
   "scripts": {
