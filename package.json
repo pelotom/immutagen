@@ -7,9 +7,10 @@
     "test": "mocha \"src/**/*.spec.js\" --compilers js:babel-register --reporter min",
     "test:watch": "npm run test -- --watch",
     "build": "browserify -s immutagen src/immutagen.js -o immutagen.js -t [ babelify ]",
-    "release-major": "xyz --increment major",
-    "release-minor": "xyz --increment minor",
-    "release-patch": "xyz --increment patch"
+    "release": "xyz",
+    "release:patch": "xyz --increment patch",
+    "release:minor": "xyz --increment minor",
+    "release:major": "xyz --increment major"
   },
   "author": "Thomas Crockett",
   "license": "MIT",
