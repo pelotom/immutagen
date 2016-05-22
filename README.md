@@ -50,8 +50,10 @@ gen.clone().next(6) // -> { value: 8, done: true }
 
 Unfortunately no such `clone()` method exists for generators, [nor is it possible to implement one](http://stackoverflow.com/questions/26179693/how-to-clone-es6-generator) without employing essentially the same simulation technique as does this library to implement immutable generators.
 
-Why does any of this matter? It may all seem academic, but suffice it to say that [certain libraries we might like to build are impossible](http://sitr.us/2014/08/02/javascript-generators-and-functional-reactive-programming.html) without immutable or cloneable generators.
+Why does any of this matter? It may all seem academic, but suffice it to say that [certain libraries we might like to build are impossible](http://sitr.us/2014/08/02/javascript-generators-and-functional-reactive-programming.html) without immutable or cloneable generators. My own use case is the [burrido](https://github.com/pelotom/burrido) library.
 
 ### Simulated Immutability
 
 Without the ability to defensively copy mutable generators, we can't implement true immutable generators. We can, however, *simulate* them, assuming a pure generator function. The strategy is to keep track of the history of values that have been fed into the generator at every `yield` expression so far, and then "replay" them from scratch whenever we want to recreate a generator in the same state.
+
+It is however crucial that the generator function be pure; if it is impure in its input the simulation could diverge upon replay, and if it is impure in its output, replaying will cause repetition of side-effects. Note also that there is inherent inefficiency in this technique, because every `yield` expression requires replaying the entire history up to that point. For this reason it's advisable to keep expensive computations to a minimum inside immutable generators, particularly as the number of `yield` expressions in the generator grows. Even if there isn't a lot of expensive computation, the runtime complexity will be quadratic in the number of `yield` expressions to be evaluated, so be careful.
