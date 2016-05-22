@@ -1,4 +1,4 @@
-// A simple immutable generator simulator that replays history in order to
+// A simple immutable generator emulator that replays history in order to
 // "clone" JavaScript's mutable generators
 
 export default genFun => {
