@@ -1,10 +1,34 @@
 # immutagen
 
-Immutagen is a JavaScript microlibrary for *simulated immutable generators*.
+**immutagen** is a JavaScript microlibrary for *simulated immutable generators*.
 
-#### Background
+### Installation
 
-[Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) are a very cool feature of ES6+ which open up lots of metaprogramming possibilities. Unfortunately, as implemented they are less powerful than they could be. The problem is that the generator objects obtained by invoking a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) are *mutable*; you repeatedly invoke a `next()` method on the same object, and it moves the generator through its state machine, potentially returning different values each time:
+```
+npm install --save immutagen
+```
+
+### Usage
+
+```javascript
+import immutagen from 'immutagen'
+
+const gen = immutagen(function*() {
+  yield 1
+  yield 2
+  return 3
+})
+gen.next()                // { value: 1, next: [function] }
+gen.next()                // { value: 1, next: [function] }
+gen.next().next()         // { value: 2, next: [function] }
+gen.next().next().next()  // { value: 3, next: undefined }
+```
+
+`immutagen` takes a generator function and returns an immutable generator object. Instead of mutating itself upon each call to `next()`, it returns a new generation method `next` alongside the value it produces. When `next` is undefined, the generator is exhausted.
+
+### Motivation
+
+[Generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) are a very cool feature of ES6+ which open up a lot of possibilities for metaprogramming. Unfortunately, as implemented they are less powerful than they could be. The problem is that the generator objects obtained by invoking a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) are *mutable*. One repeatedly invokes a `next()` method on the same generator object, which moves it through its own private state machine, returning potentially different values each time:
 
 ```javascript
 function* genFun() {
@@ -16,4 +40,18 @@ gen.next()  // -> { value: 1, done: false }
 gen.next(3) // -> { value: 5, done: true }
 ```
 
-Whenever we call `gen.next()`, the state that `gen` was in before the call is lost forever.
+This means that whenever we call `gen.next(...)`, the state that `gen` was in before the call is lost forever. For example once we make the `gen.next(3)` call above, we can no longer find out what would've happened if we had passed `6` instead of `3` to the generator in that particular state. One solution to this situation would be if we could clone generators in a particular state:
+
+```javascript
+gen.next()          // -> { value: 1, done: false }
+gen.clone().next(3) // -> { value: 5, done: true }
+gen.clone().next(6) // -> { value: 8, done: true }
+```
+
+Unfortunately no such `clone()` method exists for generators, [nor is it possible to implement one](http://stackoverflow.com/questions/26179693/how-to-clone-es6-generator) without employing essentially the same simulation technique as does this library to implement immutable generators.
+
+Why does any of this matter? It may all seem academic, but suffice it to say that [certain libraries we might like to build are impossible](http://sitr.us/2014/08/02/javascript-generators-and-functional-reactive-programming.html) without immutable or cloneable generators.
+
+### Simulated Immutability
+
+Without the ability to defensively copy mutable generators, we can't implement true immutable generators. We can, however, *simulate* them, assuming a pure generator function. The strategy is to keep track of the history of values that have been fed into the generator at every `yield` expression so far, and then "replay" them from scratch whenever we want to recreate a generator in the same state.
