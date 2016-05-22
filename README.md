@@ -1,6 +1,6 @@
 # immutagen
 
-**immutagen** is a JavaScript microlibrary for *simulated immutable generators*.
+A JavaScript microlibrary for *simulated immutable generators*.
 
 ### Installation
 
