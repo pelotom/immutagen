@@ -17,8 +17,7 @@ const gen = immutagen(function*() {
   yield 1
   yield 2
   return 3
-})
-gen.next()                // { value: 1, next: [function] }
+})()                      // { value: 1, next: [function] }
 gen.next()                // { value: 1, next: [function] }
 gen.next().next()         // { value: 2, next: [function] }
 gen.next().next().next()  // { value: 3, next: undefined }
