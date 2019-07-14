@@ -22,7 +22,7 @@ const gen = immutagen(function*() {
 gen.next()                // { value: 2, next: [function] }
 gen.next()                // { value: 2, next: [function] }
 
-gen.next().next()         // { value: 3, next: undefined }
+gen.next().next()         // { value: 3, next: null }
 ```
 
 `immutagen` takes a generator function and returns an immutable generator object. Instead of mutating itself upon each call to `next()`, it returns a new generation method `next` alongside the value it produces. When `next` is undefined, the generator is exhausted.
